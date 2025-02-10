@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lelaiv INFO3180</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-001.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" / -->
+    {% block jsheadcontent %}
+    {% endblock %}
+</head>
+<body>
+    <header>
+        <h1>lelaiv INFO3180 2025</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}#home">Home</a></li>
+                <li><a href="{{ url_for('aboutus') }}">About</a></li>
+                <li><a href="{{ url_for('home') }}#services">Services</a></li>
+                <li><a href="{{ url_for('home') }}#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+         {% block defcontent %}
+         {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 lelaiv Ltd. All rights reserved.</p>
+    </footer>
+</body>
+</html>

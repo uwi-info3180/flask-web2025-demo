@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block jsheadcontent %}
+   <script src="{{ url_for('static', filename='jscript/form-fields.js') }}" type="text/javascript" charset="UTF-8" crossorigin="anonymous"></script>
+{% endblock %}
+{% block defcontent %}
+   <section id="home">
+      <h2>Introduction</h2>
+      <p>
+         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+      </p>
+      <p>
+         Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+      </p>
+   </section>
+   <section id="services">
+      <h2>lelaiv Services for 2025</h2>
+      <form action="/" method="GET" onsubmit="return false;">
+         <select id="setOrder" name="setOrder" class="dd-order-options" onchange="load_new_order('/', this);">
+            <option value="name" selected>Select Order By</option>
+            {% for orderopt in g.order_by %}
+               <option value="{{ orderopt.code }}">
+                  {{ orderopt.name }}
+               </option>
+            {% endfor %}
+         </select>
+      </form>
+      <table>
+         <tr>
+            <th>
+               Service Name
+               {% if servorder == 'name' %}
+               <i class="fa fa-sort-{{ ('asc' if orderdir=='asc' else 'desc') }}" aria-hidden="true"></i>
+               {% endif %}
+            </th>
+            <th>
+               US$ / hour
+               {% if servorder == 'rate_us_per_hour' %}
+               <i class="fa fa-sort-{{ ('asc' if orderdir=='asc' else 'desc') }}" aria-hidden="true"></i>
+               {% endif %}
+            </th>
+            <th>JM$ / hour</th>
+            <th>
+               Tag Description
+               {% if servorder == 'tags' %}
+               <i class="fa fa-sort-{{ ('asc' if orderdir=='asc' else 'desc') }}" aria-hidden="true"></i>
+               {% endif %}
+            </th>
+         </tr>
+         {% for serv in services %}
+            <tr>
+               <td>
+                  {% if serv.faicon|length > 3 %}
+                  <i class="{{ serv.faicon }}" aria-hidden="true"></i>
+                  {% else %}
+                  <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                  {% endif %}
+                  {{ serv.name }}
+               </td>
+               <td>US{{ setcurrency (serv.rate_us_per_hour) }} </td>
+               <td>JM{{ setcurrency ((serv.rate_us_per_hour * g.cnv_usd_to_jmd)) }} </td>
+               <td>{{ serv.tags }}</td>
+            </tr>
+         {% endfor %}
+      </table>
+   </section>
+   <section id="contact">
+      <h2>Contact Us</h2>
+      <p>Reach out to us for more information or to make an inquiry.</p>
+   </section>
+{% endblock %}
