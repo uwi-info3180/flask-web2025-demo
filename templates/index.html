@@ -3,8 +3,9 @@
    <script src="{{ url_for('static', filename='jscript/form-fields.js') }}" type="text/javascript" charset="UTF-8" crossorigin="anonymous"></script>
 {% endblock %}
 {% block defcontent %}
-   <section id="home">
+   <section id="home" class="content">
       <h2>Introduction</h2>
+      <img src="{{ url_for('static', filename='images/' + g.imageloc) }}" alt="{{ g.imageloc }}" class="img-wrap-right">
       <p>
          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
       </p>
@@ -26,19 +27,19 @@
       </form>
       <table>
          <tr>
-            <th>
+            <th colspan="2">
                Service Name
                {% if servorder == 'name' %}
                <i class="fa fa-sort-{{ ('asc' if orderdir=='asc' else 'desc') }}" aria-hidden="true"></i>
                {% endif %}
             </th>
             <th>
-               US$ / hour
+               US$/hr 
                {% if servorder == 'rate_us_per_hour' %}
                <i class="fa fa-sort-{{ ('asc' if orderdir=='asc' else 'desc') }}" aria-hidden="true"></i>
                {% endif %}
             </th>
-            <th>JM$ / hour</th>
+            <th>JM$/hr</th>
             <th>
                Tag Description
                {% if servorder == 'tags' %}
@@ -54,6 +55,8 @@
                   {% else %}
                   <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                   {% endif %}
+               </td>
+               <td>
                   {{ serv.name }}
                </td>
                <td>US{{ setcurrency (serv.rate_us_per_hour) }} </td>

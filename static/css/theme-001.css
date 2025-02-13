@@ -7,6 +7,16 @@ body {
     padding: 0;
     line-height: 1.6;
 }
+.img-wrap-right {
+    float: right; /* Floats the image to the right */
+    margin-left: 7px; /* Add spacing to the left of the image */
+    margin-bottom: 5px; /* Add spacing to the bottom of the image */
+    /* width: 200px; Set a fixed width for your image */
+    border-radius: 12px;
+}
+.content {
+    overflow: hidden; /* Ensures that the floating image is contained within its parent */
+}
 header {
     background-color: #333;
     color: #fff;
@@ -33,6 +43,7 @@ nav ul li a {
     text-decoration: none;
 }
 nav ul li a:hover {
+    color: #e0a033;
     text-decoration: underline;
 }
 main {
@@ -53,7 +64,7 @@ p {
     margin-bottom: 14px;
 }
 td {
-    padding: 6px, 10px;
+    padding: 3px 10px;
     border-bottom: 1px solid #ccc;
 }
 footer {

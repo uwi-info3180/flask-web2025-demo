@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block defcontent %}
+    <div class="container">
+        <h1 >lelaiv Feedback Form</h1>
+        <form method="POST" class="mt-5">
+            {{ fbForm.hidden_tag() }}
+            <div class="form-group">
+                {{ fbForm.email.label(class="form-label") }}
+                {{ fbForm.email(class="form-control", placeholder="Enter your email") }}
+                {% for error in fbForm.email.errors %}
+                    <small class="form-text text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ fbForm.title.label(class="form-label") }}
+                {{ fbForm.title(class="form-control") }}
+                {% for error in fbForm.title.errors %}
+                    <small class="form-text text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ fbForm.service_preference.label(class="form-label") }}
+                {% for subfield in fbForm.service_preference %}
+                    <div class="form-check">
+                        {{ subfield(class="form-check-input") }}
+                        {{ subfield.label(class="form-check-label") }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="interest_areas">Subject Areas of Interest</label>
+                <div class="form-check">
+                    {{ fbForm.area_interest_1(class="form-check-input") }}
+                    {{ fbForm.area_interest_1.label(class="form-check-label", for=fbForm.area_interest_1.id) }}
+                </div>
+                <div class="form-check">
+                    {{ fbForm.area_interest_2(class="form-check-input") }}
+                    {{ fbForm.area_interest_2.label(class="form-check-label", for=fbForm.area_interest_2.id) }}
+                </div>
+                <div class="form-check">
+                    {{ fbForm.area_interest_3(class="form-check-input") }}
+                    {{ fbForm.area_interest_3.label(class="form-check-label", for=fbForm.area_interest_3.id) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ fbForm.subject.label(class="form-label") }}
+                {{ fbForm.subject(class="form-control", placeholder="Enter the Subject") }}
+                {% for error in fbForm.subject.errors %}
+                    <small class="form-text text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ fbForm.message.label(class="form-label") }}
+                {{ fbForm.message(class="form-control", placeholder="Enter your feedback") }}
+                {% for error in fbForm.message.errors %}
+                    <small class="form-text text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+            {{ fbForm.submit(class="btn btn-primary") }}
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+{% endblock %}

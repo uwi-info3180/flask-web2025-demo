@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>lelaiv INFO3180</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-001.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" / -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     {% block jsheadcontent %}
     {% endblock %}
 </head>
@@ -19,6 +20,7 @@
                 <li><a href="{{ url_for('aboutus') }}">About</a></li>
                 <li><a href="{{ url_for('home') }}#services">Services</a></li>
                 <li><a href="{{ url_for('home') }}#contact">Contact</a></li>
+                <li><a href="{{ url_for('feedback') }}">Give Us Feedback</a></li>
             </ul>
         </nav>
     </header>
@@ -27,7 +29,7 @@
          {% endblock %}
     </main>
     <footer>
-        <p>&copy; 2025 lelaiv Ltd. All rights reserved.</p>
+        <p>&copy; 2025 lelaiv Ltd. All rights reserved{{ g.strCurrentDateTime }}</p>
     </footer>
 </body>
 </html>
