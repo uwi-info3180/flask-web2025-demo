@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block defcontent %}
+   <div class="container">
+      <h1 >lelaiv Feedback Form</h1>
+      <ol class="list-group list-group-numbered">
+         {% for stat in lst_stats %}
+         <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+               <div class="fw-bold">{{ stat.descript }}</div>
+            </div>
+            <h5><span class="badge bg-primary text-light">{{ stat.value }}</span></h5>
+         </li>
+         {% endfor %}
+      </ol>
+   </div>
+{% endblock %}

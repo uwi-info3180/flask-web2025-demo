@@ -1,17 +1,15 @@
+from app import app, db
 import os
 import locale
 import random
-from flask import Flask, render_template, request, redirect, url_for, jsonify, g, flash
-from decimal import Decimal
-from forms import FeedbackForm  # Assuming forms.py contains FeedbackForm
 from datetime import datetime
-from config import Config
+from decimal import Decimal
+from flask import Flask, render_template, request, redirect, url_for, g, flash
+from .forms import FeedbackForm  # Assuming forms.py contains FeedbackForm
+from .models import Feedbacks
+from .config import Config
 
 locale.setlocale(locale.LC_ALL, '')
-
-app = Flask(__name__)
-app.config.from_object(Config)
-app.secret_key = app.config['SECRET_KEY']   # helps with CSRF token protection
 
 # global variable space
 cnv_usd_to_jmd = 172.03
@@ -24,7 +22,7 @@ services = [
    {"name": "BI", "rate_us_per_hour": 25.45, "tags": "dashboard design, data mining, big data, crowd-sourcing, data analytics, heuristic inferences, projections", "faicon": "fa fa-briefcase"},
    {"name": "mobile app dev", "rate_us_per_hour": 45.51, "tags": "Android, iOS, Blackberry, Windows Phone, responsive, multi-platform, native coding, AI-inclusion, augmented reality", "faicon": "fa fa-mobile"},
    {"name": "VR dev", "rate_us_per_hour": 41.22, "tags": "mobile devices, 3D audio, touch, secure, efficiency, optimality, fun", "faicon": "fa fa-random"},
-   {"name": "game dev", "rate_us_per_hour": 34.11, "tags": "puzzle games, RPG, edutainment, research, mobile devices", "faicon": "fa fa-gamepad"},
+   {"name": "game dev", "rate_us_per_hour": 37.71, "tags": "puzzle games, RPG, edutainment, research, mobile devices", "faicon": "fa fa-gamepad"},
    {"name": "database", "rate_us_per_hour": 21.13, "tags": "data design, implementation, standards, security, authorization, authentication, distribution, production, maintenance", "faicon": "fa fa-database"},
    {"name": "macros", "rate_us_per_hour": 21.13, "tags": "Microsoft, simple, small, focused, Office, solutions, unique problems", "faicon": "fa fa-code-fork"},
    {"name": "software dev", "rate_us_per_hour": 32.10, "tags": "Linux, MacOS, Windows, standalone, efficient, portable, connectivity", "faicon": "fa fa-floppy-o"},
@@ -72,6 +70,30 @@ def before_request():
 def home():
    return render_template("index.html", services=services)
 
+# the statistical view based on feedback contents
+@app.route('/feedback/stats')
+def feedback_statistics():
+   lst_stats = []
+   # connect to database and get list of feedback in the database
+   # lst_feedback = db.session.execute(db.select(Feedbacks)).count()
+   # get the full count of all feedback in the system
+   num_total = db.session.query(Feedbacks).count()
+   lst_stats.append({'descript': 'The total number of Feedback Messages to-date', 'value': num_total})
+   # get the number of unique emails sent by those giving feedback
+   num_profs = db.session.query(Feedbacks).filter(Feedbacks.title.ilike('%Prof%')).count()
+   lst_stats.append({'descript': 'The total number of Professor messages to-date', 'value': num_profs})
+   # get the full count of doctor feedback from the system
+   num_docs = db.session.query(Feedbacks).filter(Feedbacks.title.ilike('%Dr%')).count()
+   lst_stats.append({'descript': 'The total number of Doctor messages to-date', 'value': num_docs})
+   # get the full count of web app dev feedback from the system
+   num_webs = db.session.query(Feedbacks).filter(Feedbacks.area_interest.ilike('%Web App%')).count()
+   lst_stats.append({'descript': 'The total number of Web App Dev messages to-date', 'value': num_webs})
+   # get the full count of software dev feedback from the system
+   num_soft = db.session.query(Feedbacks).filter(Feedbacks.area_interest.ilike('%Software%')).count()
+   lst_stats.append({'descript': 'The total number of Software Dev messages to-date', 'value': num_soft})
+
+   return render_template("feedback_stats.html", lst_stats=lst_stats)
+
 # for loading the front page with a specific service ordering in place
 @app.route("/<servorder>/<orderdir>")
 def home_services_order(servorder, orderdir):
@@ -98,13 +120,28 @@ def feedback():
       email = fbForm.email.data
       selected_title = fbForm.title.data
       selected_service_preference = fbForm.service_preference.data
-      areas_interest = [fbForm.area_interest_1.data, fbForm.area_interest_2.data, fbForm.area_interest_3.data]
+      areas_interest = [
+         ('Mobile Dev' if fbForm.area_interest_1.data else ''), 
+         ('Software Dev' if fbForm.area_interest_2.data else ''), 
+         ('Web App Dev' if fbForm.area_interest_3.data else '')]
       subject = fbForm.subject.data
       message = fbForm.message.data
+      if request.method == "POST":
+         fdback = Feedbacks(
+            email, 
+            selected_title, 
+            selected_service_preference, 
+            areas_interest, 
+            subject, 
+            message)
+         db.session.add(fdback)
+         db.session.commit()
+         flash(f'New Feedback from {email} was successfully added to the db')
+      else:
+         # show flash notification of success, then return template with contents
+         flash(f'Feedback received from {email}!', 'success')
 
-      # show flash notification of success, then return template with contents
-      flash(f'Feedback received from {email}!', 'success')
-      return redirect(url_for('feedback_received', email=email))
+      return render_template('feedback.html', fbForm=fbForm, email=email)
    else:
       # Inspect and flash form errors
       for fieldName, errorMessages in fbForm.errors.items():
