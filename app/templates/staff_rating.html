@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block titlecontent %}lelaiv - Staff Rating Services{% endblock %}
+
+{% block cssheadcontent %}
+<style>
+    #thumbnails {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+    .thumbnail {
+        width: 100px;
+        height: 127px;
+        border: 1px solid #ccc;
+        border-radius: 7px;
+        cursor: pointer;
+    }
+    #dropZone {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        min-height: 150px;
+        justify-content: space-around;
+    }
+    .column {
+        width: 103px;
+        height: 130px;
+        border: 1px dashed #caa;
+        border-radius: 7px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3em;
+        font-weight: 800;
+        color: #c3d0f0; /* Lighter color for background text */
+        background-color: #e0e0f3;
+    }
+    .column .placeholder {
+        position: absolute;
+        pointer-events: none;
+    }
+</style>
+{% endblock %}
+
+{% block defcontent %}
+<div class="login-form text-center">
+    <h2 class="h3 mb-3 fw-normal"><i class="fa fa-lock" aria-hidden="true"></i>Rate your best top five (5) staff members here...</h2>
+    <form method="POST" class="mt-5" onsubmit="setFinalOrder()">
+        <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token }}" />
+        <div id="thumbnails">
+            {% for workerfile in image_files %}
+            <img src="{{ url_for('static', filename=('images/workers/' + workerfile)) }}" alt="{{ (workerfile.replace('.jpeg','')) }}" class="thumbnail" draggable="true" id="{{ (workerfile.replace('.jpeg','')).replace(' ','-') }}" />
+            {% endfor %}
+        </div>
+        <div id="dropZone">
+            <div class="column" data-index="0">
+                <span class="placeholder">1st</span>
+            </div>
+            <div class="column" data-index="1">
+                <span class="placeholder">2nd</span>
+            </div>
+            <div class="column" data-index="2">
+                <span class="placeholder">3rd</span>
+            </div>
+            <div class="column" data-index="3">
+                <span class="placeholder">4th</span>
+            </div>
+            <div class="column" data-index="4">
+                <span class="placeholder">5th</span>
+            </div>
+        </div>
+        {{ stfform.staff_rating(id='staff_rating', class='form-control') }}
+        {{ stfform.submit(class="w-100 btn btn-secondary btn-block") }}
+    </form>
+    <br/><br/>
+</div>
+<hr width="90%" height="1px" />
+<img src="{{ url_for('static', filename=('images/charts/' + chart_url)) }}" alt="{{ g.imageloc }}" alt="Current Staff Rating Chart" />
+{% endblock %}
+
+{% block jsfootercontent %}
+<script>
+const thumbnails = document.querySelectorAll('.thumbnail');
+const columns = document.querySelectorAll('.column');
+const thumbnailContainer = document.getElementById('thumbnails');
+let draggedItem = null;
+thumbnails.forEach(thumbnail => {
+    thumbnail.addEventListener('dragstart', () => {
+        draggedItem = thumbnail;
+    });
+    thumbnail.addEventListener('dragend', () => {
+        setTimeout(() => draggedItem = null, 0);
+    });
+});
+columns.forEach(column => {
+    column.addEventListener('dragover', e => {
+        e.preventDefault();
+    });
+    column.addEventListener('dragenter', e => {
+        e.preventDefault();
+        column.style.border = "3px dashed #000";
+    });
+    column.addEventListener('dragleave', () => {
+        column.style.border = "1px dashed #caa";
+    });
+    column.addEventListener('drop', () => {
+        column.style.border = "1px dashed #caa";
+        if (draggedItem) {
+            if (column.firstChild) {
+                thumbnailContainer.appendChild(column.firstChild); // Move existing image back to thumbnails
+            }
+            column.innerHTML = '';  // Remove existing items first.
+            column.appendChild(draggedItem);
+        }
+    });
+    column.addEventListener('click', () => {
+        // if the column already has a staff member image then remove it
+        if (column.firstChild) {
+            thumbnailContainer.appendChild(column.firstChild); // Move existing image back to thumbnails
+        }
+        column.innerHTML = '';  // Remove existing items.
+    });
+});
+function setFinalOrder() {
+    // set the hidden values and submit its contents to the server space
+    let order = [];
+    columns.forEach(column => {
+        if (column.firstChild) {
+            order.push(column.firstChild.id);
+        } else {
+            order.push(null);  // For empty columns.
+        }
+    });
+    document.getElementById('staff_rating').value = JSON.stringify(order);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block titlecontent %}lelaiv - Dashboard Services{% endblock %}
+
+{% block defcontent %}
+  <h1><i class="fa fa-unlock-alt" aria-hidden="true"></i> Secure Dashboard Services Space</h1>
+  {% include 'flash_messages.html' %}
+  <div class="alert alert-info">Hello {{ current_user.alias }}! This page is a secure page, it should only be accessible if you are logged in.</div>
+      <ol class="list-group list-group-numbered">
+         {% for stat in lst_stats %}
+         <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+               <div class="fw-bold">{{ stat.descript }}</div>
+            </div>
+            <h5><span class="badge bg-danger text-light">{{ stat.value }}</span></h5>
+         </li>
+         {% endfor %}
+      </ol>
+  <canvas id="myChart"></canvas>
+{% endblock %}
+
+{% block jsheadcontent %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our data-set
+        data: {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+                label: "Sales",
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [0, 10, 5, 2, 20, 30, 45],
+            }]
+        },
+
+        // Configuration options go here
+            options: {
+                title: {
+                    display: true,
+                    text: 'Monthly Sales Figures'
+                }
+            }
+    });
+    </script>
+{% endblock %}

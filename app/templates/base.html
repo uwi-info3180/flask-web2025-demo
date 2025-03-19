@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>lelaiv INFO3180</title>
+    <title>
+    {% block titlecontent %}
+    {% endblock %}
+    </title>
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-001.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     {% block jsheadcontent %}
+    {% endblock %}
+    {% block cssheadcontent %}
     {% endblock %}
 </head>
 <body>
@@ -16,12 +21,23 @@
         <h1>lelaiv INFO3180 2025</h1>
         <nav>
             <ul>
-                <li><a href="{{ url_for('home') }}#home">Home</a></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
                 <li><a href="{{ url_for('aboutus') }}">About</a></li>
                 <li><a href="{{ url_for('home') }}#services">Services</a></li>
                 <li><a href="{{ url_for('home') }}#contact">Contact</a></li>
                 <li><a href="{{ url_for('feedback') }}">Give Us Feedback</a></li>
                 <li><a href="{{ url_for('feedback_statistics') }}">Feedback Statistics</a></li>
+                {% if current_user.is_authenticated %}
+                {% if request.endpoint != 'secure_page' %}
+                <li><i class="fa fa-lock" aria-hidden="true"></i>&nbsp; &nbsp;<a href="{{ url_for('secure_page') }}">Secure Stats</a></li>
+                {% endif %}
+                {% if request.endpoint != 'staff_rating' %}
+                <li><i class="fa fa-lock" aria-hidden="true"></i>&nbsp; &nbsp;<a href="{{ url_for('staff_rating') }}">Staff Rating</a></li>
+                {% endif %}
+                <li><i class="fa fa-lock" aria-hidden="true"></i>&nbsp; &nbsp;<a href="{{ url_for('logout') }}">Logout Of System</a></li>
+                {% else %}
+                <li><i class="fa fa-unlock-alt" aria-hidden="true"></i>&nbsp; &nbsp;<a href="{{ url_for('secure_page') }}">Secured Sign In</a></li>
+                {% endif %}
             </ul>
         </nav>
     </header>
@@ -32,5 +48,7 @@
     <footer>
         <p>&copy; 2025 lelaiv Ltd. All rights reserved{{ g.strCurrentDateTime }}</p>
     </footer>
+    {% block jsfootercontent %}
+    {% endblock %}
 </body>
 </html>

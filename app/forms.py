@@ -1,6 +1,6 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, RadioField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Email, Length
+from flask_wtf import FlaskForm, csrf
+from wtforms import HiddenField, StringField, TextAreaField, SelectField, PasswordField, RadioField, BooleanField, SubmitField
+from wtforms.validators import InputRequired, DataRequired, Email, Length
 
 # feedback form just based around email, title and message
 class FeedbackForm(FlaskForm):
@@ -23,3 +23,14 @@ class FeedbackForm(FlaskForm):
     subject = StringField('Subject', validators=[DataRequired(), Length(min=5, max=100)])
     message = TextAreaField('Your Feedback', validators=[DataRequired(), Length(min=10, max=600)])
     submit = SubmitField('Send Feedback')
+
+# log in form for authentication purposes
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
+    remember_me = BooleanField('Remember me')
+
+# a special form for collecting ratings on staff members using the drag+drop and hidden field technique
+class StaffRateForm(FlaskForm):
+    staff_rating = HiddenField('Staff Rating')
+    submit = SubmitField('Send My Ratings')

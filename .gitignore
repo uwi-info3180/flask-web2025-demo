@@ -22,5 +22,9 @@ node_modules
 # SCSS
 .sass-cache
 
+# PostgreSQL
+instance/
+
 .env
 .flaskenv
+schema.sql

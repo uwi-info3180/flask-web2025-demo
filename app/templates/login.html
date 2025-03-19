@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titlecontent %}lelaiv - Authentication - Log In{% endblock %}
+
+{% block defcontent %}
+  <div class="login-form text-center">
+    <h2 class="h3 mb-3 fw-normal"><i class="fa fa-lock" aria-hidden="true"></i>Please Sign In to Secure Dashboard Space</h2>
+    {% include 'flash_messages.html' %}
+    <form action="{{ url_for('login', next=request.args.get('next')) }}" method="post">
+      {{ form.csrf_token }}
+      <div class="form-floating">
+        {{ form.username(class='form-control', placeholder="Enter username here") }}
+        {{ form.username.label }}
+      </div>
+      <div class="form-floating">
+        {{ form.password(class='form-control', placeholder="Password") }}
+        {{ form.password.label }}
+      </div>
+      <div class="form-group">
+        {{ form.remember_me }} {{ form.remember_me.label }}
+      </div>
+      <button type="submit" name="submit" class="w-100 btn btn-primary btn-block">Log In To System</button>
+    </form>
+  </div>
+{% endblock %}
